@@ -1,0 +1,56 @@
+grafana:
+  adminPassword: admin123
+
+  service:
+    type: ClusterIP
+
+  ingress:
+    enabled: true
+    ingressClassName: alb
+
+    annotations:
+      kubernetes.io/ingress.class: alb
+      alb.ingress.kubernetes.io/group.name: platform-dev
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/group.order: "20"
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:281639841923:certificate/fc1f2ace-de01-48c2-9a63-bde5952e9f4f
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+      alb.ingress.kubernetes.io/ssl-redirect: "443"
+
+    hosts:
+      - grafana-dev.rahulinfotech.in
+
+    path: /
+    pathType: Prefix
+
+prometheus:
+  service:
+    type: ClusterIP
+
+  ingress:
+    enabled: true
+    ingressClassName: alb
+
+    annotations:
+      kubernetes.io/ingress.class: alb
+      alb.ingress.kubernetes.io/group.name: platform-dev
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/group.order: "30"
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:281639841923:certificate/fc1f2ace-de01-48c2-9a63-bde5952e9f4f
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+      alb.ingress.kubernetes.io/ssl-redirect: "443"
+
+    hosts:
+      - prometheus-dev.rahulinfotech.in
+
+    paths:
+      - /
+    pathType: Prefix
+
+alertmanager:
+  enabled: false
+
+defaultRules:
+  create: true

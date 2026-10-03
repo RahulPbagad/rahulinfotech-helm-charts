@@ -1,0 +1,69 @@
+namespace: dev
+
+replicaCount: 2
+
+image:
+  repository: 281639841923.dkr.ecr.ap-south-1.amazonaws.com/backend-rahulinfotech
+  tag: dev-05e14f5
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 5000
+
+config:
+  DB_HOST:  production-eks-platform-dev-postgres.ctccyis8is0a.ap-south-1.rds.amazonaws.com
+  DB_PORT: "5432"
+  DB_NAME: studentdb
+  DB_SSLMODE: require
+  FLASK_ENV: production
+  GUNICORN_WORKERS: "2"
+
+secret:
+  DB_USERNAME: postgres
+  DB_PASSWORD: ChangeMe123!
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 300m
+    memory: 256Mi
+
+ingress:
+  enabled: true
+  className: alb
+
+  host: dev-api.space9.in
+
+  annotations:
+    kubernetes.io/ingress.class: alb
+
+    alb.ingress.kubernetes.io/group.name: platform-dev
+    alb.ingress.kubernetes.io/group.order: "10"
+
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:281639841923:certificate/fc1f2ace-de01-48c2-9a63-bde5952e9f4f
+
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+    
+
+serviceAccount:
+  create: false
+  automount: true
+  annotations: {}
+  name: ""
+  
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80

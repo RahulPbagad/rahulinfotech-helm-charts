@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+
+metadata:
+  name: backend-dev
+  namespace: argocd
+  labels:
+    image-updater: platform
+    
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: backend=281639841923.dkr.ecr.ap-south-1.amazonaws.com/backend-rahulinfotech
+    argocd-image-updater.argoproj.io/backend.update-strategy: newest-build
+    argocd-image-updater.argoproj.io/backend.helm.image-name: image.repository
+    argocd-image-updater.argoproj.io/backend.helm.image-tag: image.tag
+    argocd-image-updater.argoproj.io/write-back-method: git
+    argocd-image-updater.argoproj.io/git-branch: dev
+    argocd-image-updater.argoproj.io/write-back-target: helmvalues:values-dev.yaml
+
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/RahulPbagad/rahulinfotech-helm-charts.git
+    targetRevision: dev
+    path: charts/python-backend
+    helm:
+      valueFiles:
+        - values-dev.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

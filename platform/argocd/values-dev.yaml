@@ -1,0 +1,50 @@
+argo-cd:
+
+  global:
+    domain: argocd-dev.space9.in
+
+  configs:
+    params:
+      server.insecure: "false"
+
+  server:
+    replicas: 2
+
+    service:
+      type: ClusterIP
+
+    ingress:
+      enabled: true
+      ingressClassName: alb
+
+      hostname: argocd-dev.space9.in
+
+      annotations:
+        alb.ingress.kubernetes.io/scheme: internet-facing
+        alb.ingress.kubernetes.io/group.name: platform-dev
+        alb.ingress.kubernetes.io/target-type: ip
+        alb.ingress.kubernetes.io/backend-protocol: HTTPS
+        alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+        alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:239713807106:certificate/0a7966b8-6f0f-449a-9e6c-e97e54cce30b
+        alb.ingress.kubernetes.io/ssl-redirect: "443"
+
+      aws:
+        backendProtocolVersion: HTTP
+
+  controller:
+    replicas: 1
+
+  repoServer:
+    replicas: 1
+
+  applicationSet:
+    replicas: 1
+
+  dex:
+    enabled: false
+
+  notifications:
+    enabled: false
+
+  redis:
+    enabled: true
