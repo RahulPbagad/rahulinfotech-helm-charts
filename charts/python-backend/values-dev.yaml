@@ -4,7 +4,7 @@ replicaCount: 2
 
 image:
   repository: 281639841923.dkr.ecr.ap-south-1.amazonaws.com/backend-rahulinfotech
-  tag: dev-05e14f5
+  tag: latest
   pullPolicy: Always
 
 service:
